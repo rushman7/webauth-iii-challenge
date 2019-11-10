@@ -1,7 +1,11 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = { 
   validateCredentialBody, 
-  restricted 
+  restricted,
+  generateToken
 };
+
 
 function validateCredentialBody(req, res, next) {
   const { username, password } = req.body;
@@ -14,4 +18,17 @@ function validateCredentialBody(req, res, next) {
 function restricted(req, res, next) {
   if (req.session && req.session.user) next();
   else res.status(401).json({ message: 'You shall not pass!' })
+}
+
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username
+  };
+  const secret = 'qwdqwldq9u129dj1l2du1o2d12';
+  const options = {
+    expiresIn: '8h',
+  };
+
+  return jwt.sign(payload, secret, options)
 }

@@ -30,8 +30,13 @@ router.post('/login', middleware.validateCredentialBody, (req, res) => {
   db.getUsers({ username })
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
+        const token = middleware.generateToken(user);
+
         req.session.user = user;
-        res.status(201).json({ message: `Logged in, welcome ${user.username}!` })
+        res.status(201).json({
+           message: `Logged in, welcome ${user.username}!`,
+           token,
+        })
       } else res.status(401).json({ error: `Invalid credentials.` })
     })
     .catch(err => res.status(500).json(err))

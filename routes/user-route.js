@@ -7,7 +7,7 @@ const middleware = require('../api/middleware');
 const router = express.Router();
 
 router.get('/users', middleware.restricted, (req, res) => {
-  db.getUsers()
+  db.getUsers(req.session.user)
     .then(users => res.status(200).json(users))
     .catch(err => res.status(500).json(err))
 })
@@ -27,7 +27,7 @@ router.post('/register', middleware.validateCredentialBody, (req, res) => {
 router.post('/login', middleware.validateCredentialBody, (req, res) => {
   const { username, password } = req.body;
 
-  db.getUsers({ username })
+  db.getUser({ username })
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = middleware.generateToken(user);

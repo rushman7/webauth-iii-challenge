@@ -6,7 +6,6 @@ module.exports = {
   generateToken
 };
 
-
 function validateCredentialBody(req, res, next) {
   const { username, password } = req.body;
 
